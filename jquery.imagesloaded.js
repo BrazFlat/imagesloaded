@@ -1,5 +1,5 @@
 /*!
- * jQuery imagesLoaded plugin v2.0.1
+ * jQuery imagesLoaded plugin v2.1.0
  * http://github.com/desandro/imagesloaded
  *
  * MIT License. by Paul Irish et al.
@@ -14,14 +14,17 @@
 // blank image data-uri bypasses webkit log warning (thx doug jones)
 var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
-$.fn.imagesLoaded = function( callback ) {
+$.fn.imagesLoaded = function( callback, defer ) {
 	var $this = this,
 		deferred = $.isFunction($.Deferred) ? $.Deferred() : 0,
 		hasNotify = $.isFunction(deferred.notify),
 		$images = $this.find('img').add( $this.filter('img') ),
 		loaded = [],
 		proper = [],
-		broken = [];
+		broken = [],
+		returnObj = deferred ? deferred.promise( $this ) : $this;
+
+	defer = $.isFunction( callback ) ? defer : callback;
 
 	function doneLoading() {
 		var $proper = $(proper),
@@ -71,10 +74,17 @@ $.fn.imagesLoaded = function( callback ) {
 		}
 	}
 
-	// if no images, trigger immediately
-	if ( !$images.length ) {
-		doneLoading();
-	} else {
+	function checkImages(){
+		if ( defer ) {
+			returnObj.start = function(){};
+		}
+
+		// if no images, trigger immediately
+		if ( !$images.length ) {
+			doneLoading();
+			return;
+		}
+
 		$images.bind( 'load.imagesLoaded error.imagesLoaded', function( event ){
 			// trigger imgLoaded
 			imgLoaded( event.target, event.type === 'error' );
@@ -106,7 +116,13 @@ $.fn.imagesLoaded = function( callback ) {
 		});
 	}
 
-	return deferred ? deferred.promise( $this ) : $this;
+	if ( defer ) {
+		returnObj.start = checkImages;
+	} else {
+		checkImages();
+	}
+
+	return returnObj;
 };
 
 })(jQuery);

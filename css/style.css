@@ -396,12 +396,7 @@ button.btn.small, input[type="submit"].btn.small { *padding-top: 3px; *padding-b
 .label-important { background-color: #b94a48; }
 .label-warning { background-color: #f89406; }
 .label-success { background-color: #468847; }
-.label-info { background-color: #3a87ad; }/*
-.label:hover { color: #ffffff; text-decoration: none; }
-.label-important:hover { background-color: #953b39; }
-.label-warning:hover { background-color: #c67605; }
-.label-success:hover { background-color: #356635; }
-.label-info:hover { background-color: #2d6987; }*/
+.label-info { background-color: #3a87ad; }
 
 /* Progress */
 .progress {
@@ -476,8 +471,7 @@ button.btn.small, input[type="submit"].btn.small { *padding-top: 3px; *padding-b
 #tabs li { display: block; float: left; width: 50%; text-align: center; font-weight: bold; }
 #tabs li a { display: block; padding: 1.5em 0; text-transform: uppercase; border-radius: 0; text-decoration: none; color: #eee; text-shadow: -1px -1px 0 rgba(0,0,0,0.5); }
 #tabs li a:hover { background: #4a4a4a; }
-#tabs li.active { position: relative; top: 2px; }
-#tabs li.active a { color: #424242; background: #fff; text-shadow: none; }
+#tabs li a.active { position: relative; top: 2px; color: #424242; background: #fff; text-shadow: none; }
 
 /* Controls */
 .controlbar { margin: 2em 0 1.5em; }
@@ -489,6 +483,7 @@ button.btn.small, input[type="submit"].btn.small { *padding-top: 3px; *padding-b
 
 /* Advanced test */
 #advanced .controlbar .center { margin: 7px auto 0 auto; width: 50%; text-align: center; }
+#advanced .controlbar .center span { text-transform: uppercase; }
 #advanced .holder { width: 945px; min-height: 160px; margin: 0 0 0 -5px; padding: 0; list-style: none; }
 #advanced .holder li { position: relative; float: left; margin: 2px 0 3px 5px; padding: 0; width: 130px; height: 160px; cursor: pointer; }
 #advanced .holder li img { position: relative; display: block; width: 130px; height: 160px; z-index: 1; }

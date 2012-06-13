@@ -1,40 +1,6 @@
 $(function(){
 
 	// -----------------------------------------------------------------------------------
-	//   Page scripts
-	// -----------------------------------------------------------------------------------
-	(function(){
-
-		// Tabs navigation
-		var $tabs = $('#tabs').find('a'),
-			$container = $('#sections'),
-			$sections = $container.children();
-
-		$tabs.on('click', function(){
-
-			var id = '#'+$(this).data('activate');
-
-			$tabs.parent().removeClass('active');
-			$(this).parent().addClass('active');
-			$sections.addClass('hidden').filter(id).removeClass('hidden');
-
-			return false;
-
-		});
-
-		// Back to top button
-		$('a[href="#top"]').on('click', function(e){
-			e.preventDefault();
-			$(document).scrollTop(0);
-		});
-
-	})();
-
-	/* Trigger prettyPrint */
-	prettyPrint();
-
-
-	// -----------------------------------------------------------------------------------
 	//   Simple example
 	// -----------------------------------------------------------------------------------
 	(function(){
@@ -148,14 +114,14 @@ $(function(){
 			statusBar.hide();
 			progress.show();
 
-			// Call imagesLoaded with callback and save the deferred object
+			// Call imagesLoaded with callback, defer the determination, and save the deferred object
 			var dfd = holder.imagesLoaded(function( $images, $proper, $broken ){
 
 				totalLabel.text( $images.length );
 				properLabel.text( $proper.length );
 				brokenLabel.text( $broken.length );
 
-			});
+			}, true);
 
 			// Deferred magic
 			dfd.progress(function( isBroken, $images, $proper, $broken ){
@@ -174,13 +140,16 @@ $(function(){
 
 				var dfdState = dfd.state();
 
-				dfdLabel.addClass( dfdState === 'resolved' ? 'label-success' : 'label-important' ).text( dfdState.toUpperCase() );
+				dfdLabel.addClass( 'label-' + ( dfdState === 'resolved' ? 'success' : 'important' ) ).text( dfdState );
 
 				progress.hide();
 				statusBar.show();
 				progressBar.css({ width: 0 });
 
 			});
+
+			// Start the determination process
+			dfd.start();
 
 		}
 
@@ -238,5 +207,51 @@ $(function(){
 		});
 
 	})();
+
+
+	// -----------------------------------------------------------------------------------
+	//   Page scripts
+	// -----------------------------------------------------------------------------------
+	(function(){
+
+		// Navigation
+		var $nav = $('#nav'),
+			$sections = $('#sections').children(),
+			activeClass = 'active';
+
+		// Tabs
+		$nav.on('click', 'a', function(e){
+			e.preventDefault();
+			activate( $(this).attr('href').substr(1) );
+		});
+
+		// Back to top button
+		$('a[href="#top"]').on('click', function(e){
+			e.preventDefault();
+			$(document).scrollTop(0);
+		});
+
+		// Activate a section
+		function activate( sectionID, initial ){
+
+			sectionID = sectionID && $sections.filter('#'+sectionID).length ? sectionID : $sections.eq(0).attr('id');
+			$nav.find('a').removeClass(activeClass).filter('[href=#'+sectionID+']').addClass(activeClass);
+			$sections.hide().filter('#'+sectionID).show();
+
+			if( !initial ){
+				window.location.hash = '!' + sectionID;
+			}
+
+			$(document).trigger('activated', [ sectionID ] );
+
+		}
+
+		// Activate initial section
+		activate( window.location.hash.match(/^#!/) ? window.location.hash.substr(2) : 0, 1 );
+
+	})();
+
+	/* Trigger prettyPrint */
+	prettyPrint();
 
 });

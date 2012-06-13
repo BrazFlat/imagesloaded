@@ -27,10 +27,10 @@
 
 		<ul id="tabs" class="clearfix">
 			<li class="active">
-				<a href="#" data-activate="simple">Simple example with cloning test</a>
+				<a href="#simple">Simple example with cloning test</a>
 			</li>
 			<li>
-				<a href="#" data-activate="advanced">Example utilizing the whole plugin functionality</a>
+				<a href="#advanced">Example utilizing the whole plugin functionality</a>
 			</li>
 		</ul>
 
@@ -87,7 +87,7 @@ holder.imagesLoaded(function( $images, $proper, $broken ){
 	</div>
 
 
-	<div id="advanced" class="hidden">
+	<div id="advanced">
 
 		<div class="controlbar clearfix">
 
@@ -143,14 +143,14 @@ holder.imagesLoaded(function( $images, $proper, $broken ){
 		<h2>Code</h2>
 
 <pre class="prettyprint lang-js">
-// Call imagesLoaded with callback and save the deferred object
+// Call imagesLoaded with callback, defer the determination, and save the deferred object
 var dfd = $("#holder").imagesLoaded(function( $images, $proper, $broken ){
 
 	totalLabel.text( $images.length );
 	properLabel.text( $proper.length );
 	brokenLabel.text( $broken.length );
 
-});
+}, true);
 
 // Deferred magic
 dfd.progress(function( isBroken, $images, $proper, $broken ){
@@ -169,13 +169,16 @@ dfd.progress(function( isBroken, $images, $proper, $broken ){
 
 	var dfdState = dfd.state();
 
-	dfdLabel.addClass( dfdState === 'resolved' ? 'label-success' : 'label-important' ).text( dfdState.toUpperCase() );
+	dfdLabel.addClass( 'label-' + ( dfdState === 'resolved' ? 'success' : 'important' ) ).text( dfdState );
 
 	progress.hide();
 	statusBar.show();
 	progressBar.css({ width: 0 });
 
 });
+
+// Start the determination process
+dfd.start();
 </pre>
 
 	</div>
