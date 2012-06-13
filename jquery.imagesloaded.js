@@ -14,17 +14,24 @@
 // blank image data-uri bypasses webkit log warning (thx doug jones)
 var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 
-$.fn.imagesLoaded = function( callback, defer ) {
+$.fn.imagesLoaded = function( options, callbackArg ) {
 	var $this = this,
+		// use first argument for callback if no options object provided
+		hasOptions = typeof options === 'object',
+		callback = hasOptions ? callbackArg : options,
 		deferred = $.isFunction($.Deferred) ? $.Deferred() : 0,
 		hasNotify = $.isFunction(deferred.notify),
 		$images = $this.find('img').add( $this.filter('img') ),
 		loaded = [],
 		proper = [],
 		broken = [],
-		returnObj = deferred ? deferred.promise( $this ) : $this;
+		returnObj = deferred ? deferred.promise( $this ) : $this,
+		isDeferringStart = hasOptions && options.isDeferringStart;
 
-	defer = $.isFunction( callback ) ? defer : callback;
+	// extend options over defaults
+	if ( hasOptions ) {
+		options = $.extend( $.fn.imagesLoaded.defaults, options );
+	}
 
 	function doneLoading() {
 		var $proper = $(proper),
@@ -75,7 +82,7 @@ $.fn.imagesLoaded = function( callback, defer ) {
 	}
 
 	function checkImages(){
-		if ( defer ) {
+		if ( isDeferringStart ) {
 			returnObj.start = function(){};
 		}
 
@@ -116,13 +123,18 @@ $.fn.imagesLoaded = function( callback, defer ) {
 		});
 	}
 
-	if ( defer ) {
+	if ( isDeferringStart ) {
 		returnObj.start = checkImages;
 	} else {
 		checkImages();
 	}
 
 	return returnObj;
+};
+
+// imagesLoaded default options
+$.fn.imagesLoaded.defaults = {
+	isDeferringStart: false
 };
 
 })(jQuery);
